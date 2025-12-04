@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Login/Register</title>
+<style>
+body { font-family: Arial; background: #0b0c10; color: white; display: flex; flex-direction: column; align-items: center; padding-top:50px; transition:0.3s;}
+.container { background:#1f2833; padding:20px; border-radius:10px; width:300px; margin-bottom:20px;}
+input { width: 100%; padding:10px; margin:5px 0; border-radius:6px; border:none; }
+button { width: 100%; padding:10px; margin-top:10px; border:none; border-radius:6px; background:#66fcf1; color:#0b0c10; cursor:pointer; }
+button:hover { background:#45a29e; }
+h2 { text-align:center; color:#66fcf1; }
+.theme-btn { margin-top:10px; cursor:pointer; background:#c5c6c7; color:#0b0c10; }
+</style>
+</head>
+<body>
+
+<div class="container">
+<h2>Register</h2>
+<input type="text" id="reg_number" placeholder="Phone Number">
+<input type="text" id="reg_name" placeholder="Name">
+<input type="password" id="reg_password" placeholder="Password">
+<button onclick="register()">Register</button>
+</div>
+
+<div class="container">
+<h2>Login</h2>
+<input type="text" id="login_number" placeholder="Phone Number">
+<input type="password" id="login_password" placeholder="Password">
+<button onclick="login()">Login</button>
+</div>
+
+<button class="theme-btn" onclick="toggleTheme()">Toggle Light/Dark</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script>
+gsap.from(".container", {duration: 1.5, opacity: 0, y: 50});
+
+function register(){
+    fetch("/register",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({
+            number: document.getElementById("reg_number").value,
+            name: document.getElementById("reg_name").value,
+            password: document.getElementById("reg_password").value
+        })
+    }).then(res=>res.json()).then(data=>alert(data.message));
+}
+
+function login(){
+    fetch("/login",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({
+            number: document.getElementById("login_number").value,
+            password: document.getElementById("login_password").value
+        })
+    }).then(res=>res.json()).then(data=>{
+        alert(data.message);
+        if(data.status==="success"){ window.location.href="/translate_page"; }
+    });
+}
+
+function toggleTheme(){
+    if(document.body.style.background=="#0b0c10"){
+        document.body.style.background="#f5f5f5";
+        document.body.style.color="#0b0c10";
+    } else {
+        document.body.style.background="#0b0c10";
+        document.body.style.color="white";
+    }
+}
+</script>
+</body>
+</html>
